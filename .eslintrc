@@ -1,0 +1,33 @@
+{
+  "extends": "airbnb-base",
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": [
+          "src/"
+        ]
+      }
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true,
+    "es6": true
+  },
+  "plugins": [
+    "react",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "rules": {
+    "quotes": [
+      2,
+      "backtick",
+      "single"
+    ]
+  }
+}

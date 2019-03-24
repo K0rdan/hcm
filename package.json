@@ -1,0 +1,43 @@
+{
+  "name": "hcm-front",
+  "version": "0.0.1",
+  "author": "K0rdan",
+  "license": "ISC",
+  "repository": {
+    "url": "https://github.com/K0rdan/HCM-Front.git"
+  },
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "dependencies": {
+    "@material-ui/core": "^3.4.0",
+    "@material-ui/icons": "^3.0.1",
+    "apollo-boost": "^0.1.20",
+    "apollo-link-state": "^0.4.2",
+    "graphql": "^14.0.2",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.6.2",
+    "react": "^16.6.1",
+    "react-apollo": "^2.2.4",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "^16.6.1",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.1"
+  },
+  "devDependencies": {
+    "eslint": "5.6.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "prettier": "^1.14.3",
+    "react-devtools": "^3.4.2"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

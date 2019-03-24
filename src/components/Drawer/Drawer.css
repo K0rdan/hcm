@@ -1,0 +1,10 @@
+.ListItemIcon {
+  margin-right: 0 !important;
+  font-size: 1.25rem !important;
+}
+.ListItemText {
+  margin: 0;
+  padding: 0 2px !important;
+}
+.ListItemFavIcon {
+}

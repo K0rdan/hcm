@@ -1,0 +1,11 @@
+.HeaderTitle {
+  flex: 1 0 auto;
+}
+
+.HeaderButtonLink {
+  text-decoration: none;
+}
+
+.HeaderButtonText {
+  margin: 0 10px 0 0;
+}
