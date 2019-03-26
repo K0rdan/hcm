@@ -10,7 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core';
-import { PowerSettingsNew } from '@material-ui/icons';
+import { PowerSettingsNew, Home } from '@material-ui/icons';
 import { queries as DrawerQueries } from 'gql/Drawer/index';
 import { queries as UserQueries } from 'gql/User/index';
 import withStyle from 'components/Drawer/withStyle';
@@ -34,7 +34,7 @@ const Drawer = props => {
       </Typography>
       <ListItem button dense classes={{ gutters: classes.gutters }}>
         <ListItemIcon className={'ListItemIcon'}>
-          <PowerSettingsNew />
+          <PowerSettingsNew fontSize="inherit" />
         </ListItemIcon>
         <ListItemText
           primary={user.authenticated ? 'Logout' : 'Login'}
@@ -46,8 +46,22 @@ const Drawer = props => {
       <Typography classes={{ h6: classes.h6 }} variant="h6">
         Pages
       </Typography>
+      {pathname !== '/' ? (
+        <Link to="/" className={'DrawerButtonLink'}>
+          <ListItem button dense classes={{ gutters: classes.gutters }}>
+            <ListItemIcon className={'ListItemIcon'}>
+              <Home fontSize="inherit" />
+            </ListItemIcon>
+            <ListItemText
+              primary={'Accueil'}
+              primaryTypographyProps={{ variant: 'subtitle1' }}
+              className={'ListItemText'}
+            />
+          </ListItem>
+        </Link>
+      ) : null}
       {pathname !== '/tournament' ? (
-        <Link to="/tournament" className={'HeaderButtonLink'}>
+        <Link to="/tournament" className={'DrawerButtonLink'}>
           <ListItem button dense classes={{ gutters: classes.gutters }}>
             <ListItemIcon className={'ListItemIcon'}>
               <img
