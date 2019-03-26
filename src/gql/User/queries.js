@@ -6,7 +6,6 @@ export const USER_QUERY = gql`
     user @client {
       name
       authenticated
-      favThemes
       __typename
     }
   }

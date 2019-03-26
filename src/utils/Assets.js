@@ -1,7 +1,7 @@
-//import MenuIconLoL from '../assets/icons/lol.svg';
+import MenuIconTournament from '../assets/icons/tournament.svg';
 
 export const Assets = {
-  //MenuIconLoL,
+  MenuIconTournament,
 };
 
 export const getAsset = key => Assets[key];

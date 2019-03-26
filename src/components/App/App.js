@@ -2,7 +2,7 @@ import React from 'react';
 import { compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
-import { Home, Login } from 'pages/index';
+import { Home, Login, Tournament } from 'pages/index';
 import { Loader, Page } from 'components/index';
 import { queries as globalQueries } from 'gql/Global';
 
@@ -22,6 +22,7 @@ export const App = ({ globalData }) => {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/login" render={renderWithPage(Login)} />
+        <Route exact path="/tournament" render={renderWithPage(Tournament)} />
       </Switch>
     </div>
   );
