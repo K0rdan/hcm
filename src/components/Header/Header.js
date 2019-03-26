@@ -34,7 +34,7 @@ const Header = ({
           <MenuIcon />
         </IconButton>
         <Typography className={'HeaderTitle'} variant="h6">
-          Timeline games
+          Les écuries du Romblay
         </Typography>
         {pathname !== '/login' ? (
           <Link to="/login" className={'HeaderButtonLink'}>
