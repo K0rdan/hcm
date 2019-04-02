@@ -33,9 +33,27 @@ export const passwordValidation = password => {
   }
 };
 
+const basicChecks = (fieldName, value) => {
+  if (!value || value === '') {
+    return `${fieldName} is not set`;
+  } else if (value.length < 2) {
+    return `${fieldName} is too short`;
+  }
+
+  return true;
+};
+
+export const emailValidation = email => {
+  return true;
+};
+
 export const formValidations = {
   login: loginValidation,
   password: passwordValidation,
+  name: value => basicChecks('Name', value),
+  firstname: value => basicChecks('Firstname', value),
+  horse: value => basicChecks('Horse', value),
+  emailValidation: emailValidation,
 };
 
 export default formValidations;
