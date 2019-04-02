@@ -9,7 +9,6 @@ import {
   ApolloLink,
   Observable,
 } from 'apollo-boost';
-import { withClientState } from 'apollo-link-state';
 
 import { defaults, resolvers } from 'gql/index';
 import { App } from 'components/index';
@@ -20,11 +19,6 @@ const cache = new InMemoryCache();
 const links = [];
 
 links.push(
-  withClientState({
-    cache,
-    defaults,
-    resolvers,
-  }),
   new ApolloLink((operation, forward) => {
     return new Observable(observer => {
       let sub;
@@ -70,6 +64,11 @@ const link = ApolloLink.from(links);
 const client = new ApolloClient({
   link,
   cache,
+  resolvers,
+});
+
+cache.writeData({
+  data: defaults,
 });
 
 ReactDOM.render(
