@@ -35,9 +35,9 @@ export const passwordValidation = password => {
 
 const basicChecks = (fieldName, value) => {
   if (!value || value === '') {
-    return `${fieldName} is not set`;
+    return { [fieldName.toLowerCase()]: `${fieldName} is not set` };
   } else if (value.length < 2) {
-    return `${fieldName} is too short`;
+    return { [fieldName.toLowerCase()]: `${fieldName} is too short` };
   }
 
   return true;
@@ -53,7 +53,8 @@ export const formValidations = {
   name: value => basicChecks('Name', value),
   firstname: value => basicChecks('Firstname', value),
   horse: value => basicChecks('Horse', value),
-  emailValidation: emailValidation,
+  email: emailValidation,
+  team: value => basicChecks('Team', value),
 };
 
 export default formValidations;

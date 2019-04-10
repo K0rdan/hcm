@@ -2,7 +2,17 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import withWidth from '@material-ui/core/withWidth';
 
-const calculateStyles = ({ theme }) => ({});
+const calculateStyles = ({ theme }) => ({
+  errorLabel: {
+    color: theme.palette.error.main,
+  },
+  errorAdornment: {
+    color: theme.palette.error.main,
+  },
+  validAdornment: {
+    color: theme.palette.primary.main,
+  },
+});
 
 export default Component => props => {
   const StyledComponent = withWidth()(newProps => {

@@ -9,9 +9,12 @@ import {
   FormControl,
   TextField,
   Button,
+  InputAdornment,
 } from '@material-ui/core';
+import { Error, CheckCircle } from '@material-ui/icons';
 // Custom imports
 import withStyle from 'pages/Tournament/withStyle';
+import TeamsFormField from 'pages/Tournament/teamsFormField';
 import {
   queries as TournamentQueries,
   mutations as TournamentMutations,
@@ -25,34 +28,34 @@ export class Tournament extends React.Component {
     firstname: '',
     horse: '',
     email: '',
+    team: '',
     error: null,
   };
 
   handleChange = prop => event => {
     const { error } = this.state;
     const { value } = event.target;
-
-    // TEST
     const fieldValidation = formValidations[prop](value);
-    //
+    const newState = {
+      [prop]: value,
+      error,
+    };
 
     if (fieldValidation !== true) {
-      console.log(error, fieldValidation, error || fieldValidation);
-      this.setState({
-        [prop]: value,
-        error: fieldValidation,
-      });
-    } else {
-      this.setState({ [prop]: value, error: null });
+      newState.error = Object.assign({}, newState.error, fieldValidation);
+    } else if (newState.error !== null) {
+      delete newState.error[prop];
     }
+
+    this.setState(newState);
   };
 
   addPlayer = () => {
     const { addPlayer } = this.props;
-    const { name, firstname, horse, email } = this.state;
+    const { name, firstname, horse, email, team } = this.state;
 
     addPlayer({
-      variables: { name, firstname, horse, email },
+      variables: { name, firstname, horse, email, team },
     });
   };
 
@@ -60,59 +63,101 @@ export class Tournament extends React.Component {
     players.map(player =>
       player ? (
         <li key={`tournament-player-${player.id}`}>
-          {player.name} {player.firstname} {player.horse} {player.email}
+          {player.name} {player.firstname} {player.horse} {player.email}{' '}
+          {player.team.name}
         </li>
       ) : null,
     );
 
-  renderAddPlayerForm = (a, b, c) => {
-    const { error, name, firstname, horse, email } = this.state;
+  renderFormField = (title, placeholder, fieldName, required = false) => {
+    const { classes } = this.props;
+    const { error } = this.state;
+    const renderErrorLabel = error => (
+      <Typography variant="subtitle2" className={classes.errorLabel}>
+        {error}
+      </Typography>
+    );
+    const errorAdornment =
+      error && !!error[fieldName] ? (
+        <InputAdornment position="end">
+          <Error className={classes.errorAdornment} />
+        </InputAdornment>
+      ) : null;
+    const validAdornment =
+      (!error || !error[fieldName]) && this.state[fieldName] ? (
+        <InputAdornment position="end">
+          <CheckCircle color="primary" />
+        </InputAdornment>
+      ) : null;
+
+    return (
+      <FormControl>
+        <TextField
+          label={title}
+          placeholder={placeholder}
+          value={this.state[fieldName]}
+          onChange={this.handleChange(fieldName)}
+          error={error && !!error[fieldName]}
+          required={!!required}
+          autoFocus
+          InputProps={{ endAdornment: errorAdornment || validAdornment }}
+        />
+        {error && !!error[fieldName]
+          ? renderErrorLabel(error[fieldName])
+          : null}
+      </FormControl>
+    );
+  };
+
+  renderAddPlayerForm = () => {
+    const { name, firstname, horse, email, team } = this.state;
+    const disableSaveButton =
+      formValidations.name(name) !== true ||
+      formValidations.firstname(firstname) !== true ||
+      formValidations.horse(horse) !== true ||
+      formValidations.email(email) !== true;
 
     return (
       <Paper square>
         <Typography variant="h5">Ajouter des participants</Typography>
         <FormGroup>
-          <FormControl>
-            <Typography variant="subtitle1">Nom du participant</Typography>
-            <TextField
-              placeholder="Insérer le nom du participant"
-              value={name}
-              onChange={this.handleChange('name')}
-              required
-              autoFocus
-            />
-          </FormControl>
-          <FormControl>
-            <Typography variant="subtitle1">Prénom du participant</Typography>
-            <TextField
-              placeholder="Insérer le nom du participant"
-              value={firstname}
-              onChange={this.handleChange('firstname')}
-              required
-              autoFocus
-            />
-          </FormControl>
-          <FormControl>
-            <Typography variant="subtitle1">Nom de la monture</Typography>
-            <TextField
-              placeholder="Insérer le nom de la monture"
-              value={horse}
-              onChange={this.handleChange('horse')}
-              required
-              autoFocus
-            />
-          </FormControl>
-          <FormControl>
-            <Typography variant="subtitle1">Email</Typography>
-            <TextField
-              placeholder="Insérer l'email du participant"
-              value={email}
-              onChange={this.handleChange('email')}
-              required
-            />
-          </FormControl>
-          <Button variant="contained" size="small" onClick={this.addPlayer}>
-            Sign In
+          {this.renderFormField(
+            'Nom du participant',
+            'Insérer le nom du participant',
+            'name',
+            true,
+          )}
+          {this.renderFormField(
+            'Prénom du participant',
+            'Insérer le prénom du participant',
+            'firstname',
+            true,
+          )}
+          {this.renderFormField(
+            'Nom de la monture',
+            'Insérer le nom de la monture',
+            'horse',
+            true,
+          )}
+          {this.renderFormField(
+            'Email',
+            "Insérer l'email du participant",
+            'email',
+            true,
+          )}
+          <TeamsFormField
+            placeholder={'Equipe'}
+            setTeam={t => this.setState({ team: t })}
+            selectedTeam={team}
+          />
+          <Button
+            variant="text"
+            size="small"
+            color="primary"
+            disabled={disableSaveButton}
+            onClick={this.addPlayer}
+          >
+            Enregistrer
           </Button>
         </FormGroup>
       </Paper>
@@ -120,10 +165,10 @@ export class Tournament extends React.Component {
   };
 
   render = () => {
-    const { tournamentData } = this.props;
+    const { playersData } = this.props;
     const {
       tournament: { name, players },
-    } = tournamentData;
+    } = playersData;
 
     return (
       <div className={'Tournament'}>
@@ -139,12 +184,14 @@ export class Tournament extends React.Component {
 
 Tournament.propType = {
   classes: PropTypes.object.isRequired,
-  tournamentData: PropTypes.object.isRequired,
+  playersData: PropTypes.object.isRequired,
+  addTeam: PropTypes.func.isRequired,
   addPlayer: PropTypes.func,
 };
 
 export default compose(
   TournamentMutations.withAddPlayerMutation,
-  TournamentQueries.withTournamentQuery,
+  TournamentMutations.withAddTeamMutation,
+  TournamentQueries.withPlayersQuery,
   withStyle,
 )(Tournament);
