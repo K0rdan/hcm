@@ -160,7 +160,8 @@ export class Tournament extends React.Component {
       formValidations.name(name) !== true ||
       formValidations.firstname(firstname) !== true ||
       formValidations.horse(horse) !== true ||
-      formValidations.email(email) !== true;
+      formValidations.email(email) !== true ||
+      !team;
 
     return (
       <Paper square>

@@ -43,7 +43,8 @@ const basicChecks = (fieldName, value) => {
   return true;
 };
 
-export const emailValidation = email => {
+// TODO : Update email validation process.
+const emailValidation = email => {
   return true;
 };
 
