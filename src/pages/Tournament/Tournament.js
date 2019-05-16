@@ -12,6 +12,7 @@ import {
   InputAdornment,
 } from '@material-ui/core';
 import { Error, CheckCircle } from '@material-ui/icons';
+import { find } from 'lodash';
 // Custom imports
 import withStyle from 'pages/Tournament/withStyle';
 import TeamsFormField from 'pages/Tournament/teamsFormField';
@@ -32,9 +33,18 @@ export class Tournament extends React.Component {
     error: null,
   };
 
+  coupleNameFirstnameCheck = newState => {
+    return newState;
+  };
+
   handleChange = prop => event => {
-    const { error } = this.state;
+    const { error, name, firstname, horse, email } = this.state;
+    const { playersData } = this.props;
+    const {
+      tournament: { players },
+    } = playersData;
     const { value } = event.target;
+
     const fieldValidation = formValidations[prop](value);
     const newState = {
       [prop]: value,
@@ -44,7 +54,42 @@ export class Tournament extends React.Component {
     if (fieldValidation !== true) {
       newState.error = Object.assign({}, newState.error, fieldValidation);
     } else if (newState.error !== null) {
-      delete newState.error[prop];
+      // Name / Firstname couple check
+      const coupleNameFirstnameErrorMessage =
+        'Name and firstname already registered';
+      if (players) {
+        if (prop === 'name' && firstname) {
+          const foundNameFirstname =
+            undefined !==
+            find(players, p => p.name === value && p.firstname === firstname);
+          if (foundNameFirstname) {
+            newState.error = Object.assign({}, newState.error, {
+              name: coupleNameFirstnameErrorMessage,
+              firstname: coupleNameFirstnameErrorMessage,
+            });
+          } else {
+            delete newState.error[prop];
+            delete newState.error['firstname'];
+          }
+        } else if (prop === 'firstname' && name) {
+          const foundNameFirstname =
+            undefined !==
+            find(players, p => p.name === name && p.firstname === value);
+          if (foundNameFirstname) {
+            newState.error = Object.assign({}, newState.error, {
+              name: coupleNameFirstnameErrorMessage,
+              firstname: coupleNameFirstnameErrorMessage,
+            });
+          } else {
+            delete newState.error[prop];
+            delete newState.error['name'];
+          }
+        } else {
+          delete newState.error[prop];
+        }
+      } else {
+        delete newState.error[prop];
+      }
     }
 
     this.setState(newState);
