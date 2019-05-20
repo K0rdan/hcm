@@ -34,16 +34,58 @@ export class Tournament extends React.Component {
     error: {},
   };
 
-  coupleNameFirstnameCheck = newState => {
-    return newState;
-  };
-
-  handleChange = prop => event => {
-    const { error, name, firstname, horse, email } = this.state;
+  checkCoupleNameFirstname = (prop, value) => {
+    const { name, firstname } = this.state;
     const { playersData } = this.props;
     const {
       tournament: { players },
     } = playersData;
+    const coupleNameFirstnameErrorMessage =
+      'Name and firstname already registered';
+
+    if (prop === 'name' && firstname) {
+      const foundNameFirstname =
+        undefined !==
+        find(players, p => p.name === value && p.firstname === firstname);
+      if (foundNameFirstname) {
+        return {
+          name: coupleNameFirstnameErrorMessage,
+          firstname: coupleNameFirstnameErrorMessage,
+        };
+      }
+    } else if (prop === 'firstname' && name) {
+      const foundNameFirstname =
+        undefined !==
+        find(players, p => p.name === name && p.firstname === value);
+      if (foundNameFirstname) {
+        return {
+          name: coupleNameFirstnameErrorMessage,
+          firstname: coupleNameFirstnameErrorMessage,
+        };
+      }
+    }
+
+    return true;
+  };
+
+  checkHorseParticipation = horseName => {
+    const { playersData } = this.props;
+    const {
+      tournament: { players },
+    } = playersData;
+
+    const horseParticipation = filter(players, p => p.horse.name === horseName)
+      .length;
+    if (horseParticipation >= 3) {
+      return {
+        horse: "The horse can't participate more than 3 times",
+      };
+    }
+    return true;
+  };
+
+  handleChange = prop => event => {
+    const { error, name, firstname } = this.state;
     const { value } = event.target;
 
     const fieldValidation = formValidations[prop](value);
@@ -53,44 +95,35 @@ export class Tournament extends React.Component {
     };
 
     if (fieldValidation !== true) {
-      newState.error = Object.assign({}, newState.error, fieldValidation);
-    } else if (newState.error !== null) {
-      // Name / Firstname couple check
-      const coupleNameFirstnameErrorMessage =
-        'Name and firstname already registered';
-      if (players) {
-        if (prop === 'name' && firstname) {
-          const foundNameFirstname =
-            undefined !==
-            find(players, p => p.name === value && p.firstname === firstname);
-          if (foundNameFirstname) {
-            newState.error = Object.assign({}, newState.error, {
-              name: coupleNameFirstnameErrorMessage,
-              firstname: coupleNameFirstnameErrorMessage,
-            });
-          } else {
-            delete newState.error[prop];
-            delete newState.error['firstname'];
-          }
-        } else if (prop === 'firstname' && name) {
-          const foundNameFirstname =
-            undefined !==
-            find(players, p => p.name === name && p.firstname === value);
-          if (foundNameFirstname) {
-            newState.error = Object.assign({}, newState.error, {
-              name: coupleNameFirstnameErrorMessage,
-              firstname: coupleNameFirstnameErrorMessage,
-            });
-          } else {
-            delete newState.error[prop];
-            delete newState.error['name'];
-          }
-        } else {
-          delete newState.error[prop];
-        }
+      newState.error = {
+        ...error,
+        ...fieldValidation,
+      };
+    }
+    // Name / Firstname couple check
+    else if ((prop === 'name' && firstname) || (prop === 'firstname' && name)) {
+      const isValidOrError = this.checkCoupleNameFirstname(prop, value);
+      if (isValidOrError === true) {
+        delete newState.error.name;
+        delete newState.error.firstname;
       } else {
-        delete newState.error[prop];
+        newState.error = {
+          ...error,
+          ...isValidOrError,
+        };
       }
+    } else if (prop === 'horse') {
+      const isValidOrError = this.checkHorseParticipation(value);
+      if (isValidOrError === true) {
+        delete newState.error.horse;
+      } else {
+        newState.error = {
+          ...error,
+          ...isValidOrError,
+        };
+      }
+    } else if (newState.error && newState.error[prop]) {
+      delete newState.error[prop];
     }
 
     this.setState(newState);
@@ -153,7 +186,7 @@ export class Tournament extends React.Component {
           InputProps={{ endAdornment: errorAdornment || validAdornment }}
         />
         {error && !!error[fieldName]
-          ? renderErrorLabel(error[fieldName])
+          ? this.renderErrorLabel(error[fieldName])
           : null}
       </FormControl>
     );
