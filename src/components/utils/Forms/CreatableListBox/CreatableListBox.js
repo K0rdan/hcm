@@ -14,6 +14,7 @@ const CreatableListBox = ({
   selectedItem,
   addItem,
   setItem,
+  error,
 }) => {
   const options = items.map(i => ({
     value: i.name,
@@ -39,22 +40,21 @@ const CreatableListBox = ({
           setItem();
         }
       }}
-      theme={theme => {
-        return {
-          ...theme,
-          borderRadius: 0,
-          colors: {
-            ...theme.colors,
-            primary: 'black',
-          },
-        };
-      }}
+      theme={theme => ({
+        ...theme,
+        borderRadius: 0,
+        colors: {
+          ...theme.colors,
+          primary: error ? theme.colors.danger : theme.colors.primary,
+        },
+      })}
     />
   );
 };
 
 CreatableListBox.defaultProps = {
   selectedItem: null,
+  error: false,
 };
 
 CreatableListBox.propTypes = {
@@ -64,6 +64,7 @@ CreatableListBox.propTypes = {
   items: PropTypes.array.isRequired,
   addItem: PropTypes.func.isRequired,
   setItem: PropTypes.func.isRequired,
+  error: PropTypes.bool,
 };
 
 export default compose(withStyle)(CreatableListBox);
