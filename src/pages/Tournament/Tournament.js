@@ -12,7 +12,7 @@ import {
   InputAdornment,
 } from '@material-ui/core';
 import { Error, CheckCircle } from '@material-ui/icons';
-import { find } from 'lodash';
+import { find, filter, isEqual } from 'lodash';
 // Custom imports
 import withStyle from 'pages/Tournament/withStyle';
 import TeamsFormField from 'pages/Tournament/teamsFormField';
@@ -30,7 +30,7 @@ export class Tournament extends React.Component {
     horse: '',
     email: '',
     team: '',
-    error: null,
+    error: {},
   };
 
   coupleNameFirstnameCheck = newState => {
