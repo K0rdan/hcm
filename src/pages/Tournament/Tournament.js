@@ -16,6 +16,7 @@ import { find, filter, isEqual } from 'lodash';
 // Custom imports
 import withStyle from 'pages/Tournament/withStyle';
 import TeamsFormField from 'pages/Tournament/teamsFormField';
+import HorsesFormField from 'pages/Tournament/horsesFormField';
 import {
   queries as TournamentQueries,
   mutations as TournamentMutations,
@@ -108,20 +109,24 @@ export class Tournament extends React.Component {
     players.map(player =>
       player ? (
         <li key={`tournament-player-${player.id}`}>
-          {player.name} {player.firstname} {player.horse} {player.email}{' '}
+          {player.name} {player.firstname} {player.horse.name} {player.email}{' '}
           {player.team.name}
         </li>
       ) : null,
     );
 
-  renderFormField = (title, placeholder, fieldName, required = false) => {
+  renderErrorLabel = error => {
     const { classes } = this.props;
-    const { error } = this.state;
-    const renderErrorLabel = error => (
+    return (
       <Typography variant="subtitle2" className={classes.errorLabel}>
         {error}
       </Typography>
     );
+  };
+
+  renderFormField = (title, placeholder, fieldName, required = false) => {
+    const { classes } = this.props;
+    const { error } = this.state;
     const errorAdornment =
       error && !!error[fieldName] ? (
         <InputAdornment position="end">
@@ -175,12 +180,12 @@ export class Tournament extends React.Component {
             'firstname',
             true,
           )}
-          {this.renderFormField(
-            'Nom de la monture',
-            'Insérer le nom de la monture',
-            'horse',
-            true,
-          )}
+          <HorsesFormField
+            placeholder={'Monture'}
+            setHorse={h => this.handleChange('horse')({ target: { value: h } })}
+            selectedHorse={horse}
+            error={error && error.horse ? error.horse : null}
+          />
           {this.renderFormField(
             'Email',
             "Insérer l'email du participant",
