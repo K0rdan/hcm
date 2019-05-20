@@ -155,13 +155,9 @@ export class Tournament extends React.Component {
   };
 
   renderAddPlayerForm = () => {
-    const { name, firstname, horse, email, team } = this.state;
+    const { error, name, firstname, horse, email, team } = this.state;
     const disableSaveButton =
-      formValidations.name(name) !== true ||
-      formValidations.firstname(firstname) !== true ||
-      formValidations.horse(horse) !== true ||
-      formValidations.email(email) !== true ||
-      !team;
+      !name || !firstname || !horse || !email || !team || !isEqual(error, {});
 
     return (
       <Paper square>
