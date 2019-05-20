@@ -58,9 +58,26 @@ export const withAddTeamMutation = graphql(addTeamMutation, {
   }),
 });
 
+const addHorseMutation = gql`
+  mutation AddHorse($name: String!) {
+    addHorse(name: $name) @client {
+      horse {
+        id
+        name
+      }
+    }
+  }
+`;
+export const withAddHorseMutation = graphql(addHorseMutation, {
+  props: ({ mutate }) => ({
+    addHorse: name => mutate({ variables: { name } }),
+  }),
+});
+
 export const mutations = {
   withAddPlayerMutation,
   withAddTeamMutation,
+  withAddHorseMutation,
 };
 
 export default mutations;

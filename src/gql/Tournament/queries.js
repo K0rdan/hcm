@@ -1,6 +1,19 @@
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
+export const HORSES_QUERY = gql`
+  query Horses {
+    tournament @client {
+      horses {
+        id
+        name
+      }
+      __typename
+    }
+  }
+`;
+export const withHorsesQuery = graphql(HORSES_QUERY, { name: 'horsesData' });
+
 export const TEAMS_QUERY = gql`
   query Teams {
     tournament @client {
@@ -21,7 +34,10 @@ export const PLAYERS_QUERY = gql`
         id
         name
         firstname
-        horse
+        horse {
+          id
+          name
+        }
         email
         team {
           id
@@ -42,12 +58,19 @@ export const TOURNAMENT_QUERY = gql`
         id
         name
         firstname
-        horse
+        horse {
+          id
+          name
+        }
         email
         team {
           id
           name
         }
+      }
+      horses {
+        id
+        name
       }
       teams {
         id
@@ -64,6 +87,7 @@ export const withTournamentQuery = graphql(TOURNAMENT_QUERY, {
 export const queries = {
   TOURNAMENT_QUERY,
   withTournamentQuery,
+  withHorsesQuery,
   withTeamsQuery,
   withPlayersQuery,
 };

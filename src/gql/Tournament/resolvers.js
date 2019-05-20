@@ -6,7 +6,7 @@ import { TOURNAMENT_QUERY } from 'gql/Tournament/queries';
 export const resolvers = {
   addPlayer: (_, { name, firstname, horse, email, team }, { cache }) => {
     const { tournament } = cache.readQuery({ query: TOURNAMENT_QUERY });
-    const { players, teams } = tournament;
+    const { players, horses, teams } = tournament;
 
     if (players) {
       const isPlayerNameAlreadyRegistered =
@@ -23,7 +23,7 @@ export const resolvers = {
           id: players.length + 1,
           name,
           firstname,
-          horse,
+          horse: horses.find(h => h.name === horse),
           email,
           team: teams.find(t => t.name === team),
           __typename: 'Player',
@@ -33,6 +33,32 @@ export const resolvers = {
             tournament: {
               ...tournament,
               players: newPlayersList,
+              __typename: 'Tournament',
+            },
+          },
+        });
+      }
+    }
+
+    return null;
+  },
+  addHorse: (_, { name }, { cache }) => {
+    const { tournament } = cache.readQuery({ query: TOURNAMENT_QUERY });
+    const { horses } = tournament;
+
+    if (horses) {
+      const isHorseNameAlreadyRegistered = find(horses, h => h.name === name);
+      if (!isHorseNameAlreadyRegistered) {
+        const newHorsesList = concat(horses, {
+          id: horses.length + 1,
+          name,
+          __typename: 'Horse',
+        });
+        cache.writeData({
+          data: {
+            tournament: {
+              ...tournament,
+              horses: newHorsesList,
               __typename: 'Tournament',
             },
           },
