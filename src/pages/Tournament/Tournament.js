@@ -84,6 +84,22 @@ export class Tournament extends React.Component {
     return true;
   };
 
+  checkTeamParticipation = teamName => {
+    const { playersData } = this.props;
+    const {
+      tournament: { players },
+    } = playersData;
+    const teamParticipation = filter(players, p => p.team.name === teamName)
+      .length;
+
+    if (teamParticipation >= 4) {
+      return {
+        team: "The team can't have more than 4 plyers",
+      };
+    }
+    return true;
+  };
+
   handleChange = prop => event => {
     const { error, name, firstname } = this.state;
     const { value } = event.target;
@@ -112,10 +128,24 @@ export class Tournament extends React.Component {
           ...isValidOrError,
         };
       }
-    } else if (prop === 'horse') {
+    }
+    // Horse count participation
+    else if (prop === 'horse') {
       const isValidOrError = this.checkHorseParticipation(value);
       if (isValidOrError === true) {
         delete newState.error.horse;
+      } else {
+        newState.error = {
+          ...error,
+          ...isValidOrError,
+        };
+      }
+    }
+    // Team count members
+    else if (prop === 'team') {
+      const isValidOrError = this.checkTeamParticipation(value);
+      if (isValidOrError === true) {
+        delete newState.error.team;
       } else {
         newState.error = {
           ...error,
@@ -227,8 +257,9 @@ export class Tournament extends React.Component {
           )}
           <TeamsFormField
             placeholder={'Equipe'}
-            setTeam={t => this.setState({ team: t })}
+            setTeam={t => this.handleChange('team')({ target: { value: t } })}
             selectedTeam={team}
+            error={error && error.team ? error.team : null}
           />
           <Button
             variant="text"
